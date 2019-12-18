@@ -1,0 +1,27 @@
+{
+  "name": "robocar-devices",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/roboracingleague/robocar-devices.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/roboracingleague/robocar-devices/issues"
+  },
+  "homepage": "https://github.com/roboracingleague/robocar-devices#readme",
+  "dependencies": {
+    "@nitescuc/rccar-actuator": "git+https://github.com/roboracingleague/rccar-actuator.git",
+    "@nitescuc/rccar-remote-reader": "git+https://github.com/roboracingleague/rccar-remote-reader.git",
+    "config": "^3.1.0",
+    "js-yaml": "^3.13.1",
+    "pigpio": "^1.2.2",
+    "zeromq": "^6.0.0-beta.5"
+  }
+}

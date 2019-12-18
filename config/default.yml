@@ -1,0 +1,21 @@
+actuator:
+  emitter: tcp://127.0.0.1:5555
+  max_pulse: 1800
+  min_pulse: 1100
+  server_port: 5001
+  trim: 0
+configServer:
+  emitter: tcp://127.0.0.1:5556
+remote:
+  server_port: 5001
+  server_address: "127.0.0.1"
+hardware:
+  REMOTE_STEERING_PIN: 17
+  REMOTE_THROTTLE_PIN: 27
+  REMOTE_MODE_PIN: 22
+  ACTUATOR_STEERING: 24
+  ACTUATOR_THROTTLE: 23
+  LED_RED: 16
+  LED_GREEN: 21
+  LED_BLUE: 20
+  
