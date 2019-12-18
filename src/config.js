@@ -11,7 +11,7 @@ class Config extends EventEmitter {
         this.overrides = {};
         receiver.connect(config.get('configServer.emitter'));
         receiver.subscribe('config');
-        receiveMessages().catch(e => console.error('Error receiving configuration messages', e));
+        this.receiveMessages().catch(e => console.error('Error receiving configuration messages', e));
     }
     static getConfig() {
         if (!conf) conf = new Config();
