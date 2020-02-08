@@ -22,7 +22,7 @@
     "@nitescuc/rccar-remote-reader": "git+https://github.com/roboracingleague/rccar-remote-reader.git",
     "config": "^3.1.0",
     "js-yaml": "^3.13.1",
-    "pigpio": "^1.2.2",
-    "zeromq": "^6.0.0-beta.5"
+    "mqtt": "^3.0.0",
+    "pigpio": "^1.2.2"
   }
 }
