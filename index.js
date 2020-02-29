@@ -150,9 +150,9 @@ mqttClient.on('error', e => {
 const updateLed = () => {
     ledDisplay.update(mode, actuatorThrottle.getValue());
     mqttClient.publish('status/devices', JSON.stringify({
-        distance,
+//        distance,
         mode,
-        rpm
+//        rpm
     }))
 }
 setInterval(updateLed, 1000);
