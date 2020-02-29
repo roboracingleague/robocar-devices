@@ -3,7 +3,9 @@ const { RemoteChannel, RemoteSwitchChannel } = require('@nitescuc/rccar-remote-r
 const { Actuator } = require('@nitescuc/rccar-actuator');
 const { Config } = require('./src/config');
 const { LedDisplay } = require('./src/led');
+
 const dgram = require('dgram');
+const mqtt = require('mqtt');
 
 const config = Config.getConfig();
 
@@ -11,8 +13,8 @@ const REMOTE_STEERING_PIN = config.get('hardware.REMOTE_STEERING_PIN');
 const REMOTE_THROTTLE_PIN = config.get('hardware.REMOTE_THROTTLE_PIN');
 const REMOTE_MODE_PIN = config.get('hardware.REMOTE_MODE_PIN');
 
-const ACTUATOR_STEERING = config.get('hardware.ACTUATOR_STEERING');
-const ACTUATOR_THROTTLE = config.get('hardware.ACTUATOR_THROTTLE');
+const ACTUATOR_STEERING = 24;
+const ACTUATOR_THROTTLE = 23;
 
 let mode = 'user';
 
@@ -33,7 +35,9 @@ const actuatorSteering = new Actuator({
 });
 const actuatorThrottle = new Actuator({
     pin: ACTUATOR_THROTTLE,
-    remapValues: [config.get('actuator.min_pulse'), config.get('actuator.max_pulse')]
+    remapValues: [config.get('actuator.min_pulse'), config.get('actuator.max_pulse')],
+    
+    throttleRewrite: Object.assign({}, config.get('actuator.throttle_rewrite') || {})
 });
 
 const setSteeringFromRemote = (value) => {
@@ -66,6 +70,7 @@ const changeMode = value => {
             mode = 'local';
         } else {
             mode = 'local_angle';
+            actuatorThrottle.stop(() => { setThrottleFromRemote(0); })
             setThrottleFromRemote(0);
         }
     }
@@ -134,8 +139,20 @@ actuatorServer.bind(config.get('actuator.server_port'));
 config.on('min_pulse', value => actuatorThrottle.setRemapMinValue(value));
 config.on('max_pulse', value => actuatorThrottle.setRemapMaxValue(value));
 config.on('actuator_trim', value => actuatorSteering.setTrimValue(value));
+config.on('actuator_throttle_rewrite', value => actuatorThrottle.setThrottleRewrite(value));
+
+// debug messages
+const mqttClient = mqtt.connect(config.get('configServer.mqtt'));
+mqttClient.on('error', e => {
+    console.error('MQTT error', e);
+});
 
 const updateLed = () => {
     ledDisplay.update(mode, actuatorThrottle.getValue());
+    mqttClient.publish('status/devices', JSON.stringify({
+        distance,
+        mode,
+        rpm
+    }))
 }
 setInterval(updateLed, 1000);

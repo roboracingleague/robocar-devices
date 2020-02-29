@@ -4,6 +4,9 @@ actuator:
   min_pulse: 1100
   server_port: 5001
   trim: 0
+  throttle_rewrite:
+    _4286: 0.5
+    _7143: 0.75
 configServer:
   mqtt: tcp://127.0.0.1:1883
 remote:
