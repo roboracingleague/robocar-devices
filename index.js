@@ -3,6 +3,7 @@ const { RemoteChannel, RemoteSwitchChannel } = require('@nitescuc/rccar-remote-r
 const { Actuator } = require('@nitescuc/rccar-actuator');
 const { Config } = require('./src/config');
 const { LedDisplay } = require('./src/led');
+const { RpmReader } = require('@nitescuc/encoder-rpm');
 
 const dgram = require('dgram');
 const mqtt = require('mqtt');
@@ -16,7 +17,11 @@ const REMOTE_MODE_PIN = config.get('hardware.REMOTE_MODE_PIN');
 const ACTUATOR_STEERING = 24;
 const ACTUATOR_THROTTLE = 23;
 
+const RPM_POWER_PIN = config.get('hardware.RPM_POWER_PIN');
+const RPM_DATA_PIN = config.get('hardware.RPM_DATA_PIN');
+
 let mode = 'user';
+let rpm = 0;
 
 const remoteSocket = dgram.createSocket('udp4');
 const remote_server_port = config.get('remote.server_port');
@@ -136,6 +141,14 @@ actuatorServer.on('message', (msg, rinfo) => {
 });
 actuatorServer.bind(config.get('actuator.server_port'));
 
+const rpmReader = new RpmReader({
+    pin: RPM_DATA_PIN,
+    powerPin: RPM_POWER_PIN,
+    callback: (channel, value) => {
+        rpm = value;
+    }
+});
+
 config.on('min_pulse', value => actuatorThrottle.setRemapMinValue(value));
 config.on('max_pulse', value => actuatorThrottle.setRemapMaxValue(value));
 config.on('actuator_trim', value => actuatorSteering.setTrimValue(value));
@@ -152,7 +165,7 @@ const updateLed = () => {
     mqttClient.publish('status/devices', JSON.stringify({
 //        distance,
         mode,
-//        rpm
+        rpm
     }))
 }
 setInterval(updateLed, 1000);

@@ -21,4 +21,6 @@ hardware:
   LED_RED: 16
   LED_GREEN: 21
   LED_BLUE: 20
+  RPM_POWER_PIN: 26
+  RPM_DATA_PIN: 19
   
